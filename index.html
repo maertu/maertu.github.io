@@ -1,9 +1,73 @@
-<html>
-	<header>
-	</header>
-	<body>
-		<h1>This is a test</h1>
-	</body>
-	<footer>
-	</footer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="https://d3js.org/d3-scale.v3.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js"></script>
+	<style>
+		.container{
+			border: 1px solid black;
+		}
+		.bar{
+			fill: blue;
+		}
+	</style>
+</head>
+<body>
+<div id="container">
+	<svg class="container" width="600" height="500"></svg>
+</div>
+
+<script>
+
+	json = "[\n" +
+			"  {\"name\": \"Java\", \"level\": \"5\"},\n" +
+			"  {\"name\": \"Typescript\", \"level\": \"3\"},\n" +
+			"  {\"name\": \"Javascript\", \"level\": \"3\"},\n" +
+			"  {\"name\": \"Kotlin\", \"level\": \"3\"},\n" +
+			"  {\"name\": \"Python\", \"level\": \"2\"},\n" +
+			"  {\"name\": \"C#\", \"level\": \"1\"},\n" +
+			"  {\"name\": \"C++\", \"level\": \"1\"}\n" +
+			"]"
+	var programmingSkills = JSON.parse(json);
+
+	const xScale = d3
+			.scaleBand()
+			.domain(programmingSkills.map((data) => data.name))
+			.rangeRound([0,600])
+			.padding(0.1);
+
+	const yScale = d3
+			.scaleLinear()
+			.domain([0,6])
+			.range([500,0])
+
+	const svg = d3.select('svg');
+
+	let barGroup = svg.selectAll('.bar')
+			.data(programmingSkills)
+			.enter()
+			.append("g");
+
+	const bars = barGroup
+			.append('rect')
+			.classed('bar', true)
+			.attr('width', xScale.bandwidth())
+			.attr('height', data => 600 - yScale(data.level))
+			.attr('x', data => xScale(data.name))
+			.attr('y', data => yScale(data.level))
+
+	const labels = barGroup
+			.append("text")
+			.text(data => data.name)
+			.attr('x', data => xScale(data.name))
+			.attr('y', data => yScale(data.level))
+			.attr("font-family" , "sans-serif")
+			.attr("font-size" , "14px")
+			.attr("fill" , "black")
+			.attr("text-anchor", "middle");
+
+
+	//d3.json("./data.json", (data)=> console.log(data))
+</script>
+</body>
 </html>
